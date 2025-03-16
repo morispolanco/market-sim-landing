@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketSim - Simulador de Marketing Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        primaryDark: '#4a49b8',
+                        primaryLight: '#8180e7',
+                        lightBg: '#FFFFFF',
+                        darkBg: '#181818',
+                        darkText: '#e2e2e2',
+                        darkBorder: '#333333'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+        
+        // Detectar preferencia de modo oscuro
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #5D5CDE 0%, #8180e7 100%);
+        }
+        
+        .dark .dark-gradient-bg {
+            background: linear-gradient(135deg, #4a49b8 0%, #6e6dd6 100%);
+        }
+        
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(93, 92, 222, 0.1), 0 10px 10px -5px rgba(93, 92, 222, 0.04);
+        }
+        
+        .dark .platform-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(93, 92, 222, 0.2), 0 10px 10px -5px rgba(93, 92, 222, 0.1);
+        }
+        
+        .step-item {
+            position: relative;
+        }
+        
+        .step-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 3.5rem;
+            height: calc(100% - 2rem);
+            width: 2px;
+            background: #5D5CDE;
+        }
+        
+        .dark .step-item:not(:last-child):after {
+            background: #6e6dd6;
+        }
+    </style>
+</head>
+<body class="font-sans bg-lightBg dark:bg-darkBg text-gray-900 dark:text-darkText transition-colors duration-200">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-gray-200 dark:border-darkBorder">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <div class="text-primary dark:text-primaryLight font-bold text-2xl">
+                        Market<span class="text-gray-900 dark:text-white">Sim</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#features" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight transition-colors">Características</a>
+                    <a href="#howto" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight transition-colors">Primeros Pasos</a>
+                    <a href="#results" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight transition-colors">Resultados</a>
+                    <a href="#strategy" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight transition-colors">Estrategias</a>
+                    <button class="bg-primary hover:bg-primaryDark text-white rounded-lg px-4 py-2 transition-colors">
+                        Comenzar Ahora
+                    </button>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-darkBg border-b border-gray-200 dark:border-darkBorder">
+            <div class="px-4 py-3 space-y-3">
+                <a href="#features" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight">Características</a>
+                <a href="#howto" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight">Primeros Pasos</a>
+                <a href="#results" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight">Resultados</a>
+                <a href="#strategy" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primaryLight">Estrategias</a>
+                <button class="w-full bg-primary hover:bg-primaryDark text-white rounded-lg px-4 py-2 transition-colors">
+                    Comenzar Ahora
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg dark:dark-gradient-bg py-16 md:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                        Simulación avanzada para tus estrategias de marketing
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/90 mb-8">
+                        Modela, analiza y compara el rendimiento de diferentes estrategias de marketing digital antes de invertir tu presupuesto.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button class="bg-white text-primary hover:bg-gray-100 font-medium rounded-lg px-6 py-3 transition-colors">
+                            Probar gratis
+                        </button>
+                        <button class="border border-white text-white hover:bg-white/10 font-medium rounded-lg px-6 py-3 transition-colors">
+                            Ver demostración
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 mt-12 md:mt-0 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="bg-white dark:bg-darkBg rounded-xl shadow-2xl overflow-hidden">
+                            <div class="p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="font-semibold text-lg">Simulación de Marketing</h3>
+                                    <span class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full">Activo</span>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Google Ads</span>
+                                        <div class="relative w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="absolute top-0 left-0 h-2 bg-primary rounded-full" style="width: 70%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">€350</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Facebook/Instagram</span>
+                                        <div class="relative w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="absolute top-0 left-0 h-2 bg-primary rounded-full" style="width: 50%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">€250</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">TikTok</span>
+                                        <div class="relative w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="absolute top-0 left-0 h-2 bg-primary rounded-full" style="width: 30%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">€150</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Email Marketing</span>
+                                        <div class="relative w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="absolute top-0 left-0 h-2 bg-primary rounded-full" style="width: 20%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">€100</span>
+                                    </div>
+                                </div>
+                                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="flex justify-between">
+                                        <div>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">ROI Estimado</p>
+                                            <p class="text-xl font-bold text-green-600 dark:text-green-400">215%</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Conversiones</p>
+                                            <p class="text-xl font-bold">128</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Alcance</p>
+                                            <p class="text-xl font-bold">25.4K</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-gray-50 dark:bg-darkBg/60">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Qué puedes hacer con MarketSim?</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Nuestra herramienta te permite tomar decisiones informadas sobre dónde invertir tu presupuesto de marketing para maximizar el retorno de inversión.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Simula múltiples plataformas</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Evalúa simultáneamente campañas en Google Ads, Facebook, Instagram, LinkedIn, Email Marketing, TikTok y más.
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-money-bill-wave text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Distribuye presupuesto</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Distribuye virtualmente tu presupuesto de marketing y visualiza los resultados esperados antes de gastar.
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-exchange-alt text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Compara resultados</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Analiza el ROI proyectado, alcance, clics y conversiones entre diferentes plataformas digitales.
+                    </p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-lightbulb text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Recomendaciones personalizadas</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Recibe sugerencias específicas para optimizar tu estrategia digital según tu sector y objetivos.
+                    </p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sliders-h text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Ajusta parámetros</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Modifica público objetivo, sector, plazo y presupuesto para obtener estimaciones más precisas.
+                    </p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder transition-all duration-300 platform-card">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-database text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Datos de mercado reales</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Utiliza datos actualizados y algoritmos predictivos avanzados para estimaciones más precisas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How To Section -->
+    <section id="howto" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Primeros pasos</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Sigue estos sencillos pasos para comenzar a simular tus estrategias de marketing digital.
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-12">
+                    <!-- Step 1 -->
+                    <div class="step-item flex">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mr-6">
+                            <span class="font-bold">1</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Definir tu producto</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Selecciona la categoría que mejor represente tu producto o servicio. Esto ayuda a nuestro algoritmo a calcular estimaciones más precisas basadas en el comportamiento típico de tu sector.
+                            </p>
+                            <div class="bg-white dark:bg-darkBg/80 rounded-lg border border-gray-200 dark:border-darkBorder p-4">
+                                <select class="w-full p-2 text-base border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-darkBg/50 text-gray-900 dark:text-gray-300 focus:ring-2 focus:ring-primary dark:focus:ring-primaryLight focus:border-transparent">
+                                    <option selected disabled>Selecciona una categoría</option>
+                                    <option>Comercio electrónico</option>
+                                    <option>SaaS/Software</option>
+                                    <option>Servicios profesionales</option>
+                                    <option>Educación</option>
+                                    <option>Salud y bienestar</option>
+                                    <option>Alimentación y bebidas</option>
+                                    <option>Moda y accesorios</option>
+                                    <option>Viajes y turismo</option>
+                                    <option>Hogar y decoración</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="step-item flex">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mr-6">
+                            <span class="font-bold">2</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Establecer tu presupuesto</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Indica la cantidad que planeas invertir. Nuestro simulador te mostrará cómo distribuir eficientemente este presupuesto entre las plataformas seleccionadas.
+                            </p>
+                            <div class="bg-white dark:bg-darkBg/80 rounded-lg border border-gray-200 dark:border-darkBorder p-4">
+                                <div class="flex items-center">
+                                    <span class="text-gray-700 dark:text-gray-300 mr-2">€</span>
+                                    <input type="number" placeholder="1000" class="w-full p-2 text-base border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-darkBg/50 text-gray-900 dark:text-gray-300 focus:ring-2 focus:ring-primary dark:focus:ring-primaryLight focus:border-transparent">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="step-item flex">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mr-6">
+                            <span class="font-bold">3</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Seleccionar el plazo</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Define el período de tiempo para tu campaña. Esto afecta directamente a las estimaciones de alcance y conversión.
+                            </p>
+                            <div class="bg-white dark:bg-darkBg/80 rounded-lg border border-gray-200 dark:border-darkBorder p-4">
+                                <div class="grid grid-cols-4 gap-3">
+                                    <button class="p-2 border border-gray-300 dark:border-gray-600 hover:border-primary hover:dark:border-primaryLight rounded text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                                        1 mes
+                                    </button>
+                                    <button class="p-2 border border-primary dark:border-primaryLight bg-primary/5 dark:bg-primary/10 rounded text-center text-primary dark:text-primaryLight font-medium">
+                                        3 meses
+                                    </button>
+                                    <button class="p-2 border border-gray-300 dark:border-gray-600 hover:border-primary hover:dark:border-primaryLight rounded text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                                        6 meses
+                                    </button>
+                                    <button class="p-2 border border-gray-300 dark:border-gray-600 hover:border-primary hover:dark:border-primaryLight rounded text-center hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                                        1 año
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div class="step-item flex">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mr-6">
+                            <span class="font-bold">4</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Describir tu audiencia objetivo</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Cuanto más específica sea tu descripción, mejores serán los resultados de la simulación. Incluye datos demográficos, intereses y comportamientos de compra.
+                            </p>
+                            <div class="bg-white dark:bg-darkBg/80 rounded-lg border border-gray-200 dark:border-darkBorder p-4">
+                                <textarea rows="3" placeholder="Describe tu audiencia ideal (ej. profesionales de 30-45 años interesados en tecnología, con alto poder adquisitivo...)" class="w-full p-2 text-base border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-darkBg/50 text-gray-900 dark:text-gray-300 focus:ring-2 focus:ring-primary dark:focus:ring-primaryLight focus:border-transparent"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button class="bg-primary hover:bg-primaryDark text-white font-medium rounded-lg px-8 py-3 transition-colors">
+                        Iniciar simulación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="py-16 bg-gray-50 dark:bg-darkBg/60">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Interpretación de resultados</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Comprende los datos de la simulación para tomar decisiones estratégicas sobre tu inversión en marketing digital.
+                </p>
+            </div>
+            
+            <div class="bg-white dark:bg-darkBg/80 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-darkBorder max-w-5xl mx-auto">
+                <div class="p-6 md:p-8">
+                    <h3 class="text-xl font-semibold mb-6">Métricas principales</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Metric 1 -->
+                        <div class="bg-gray-50 dark:bg-darkBg rounded-lg p-4 border border-gray-100 dark:border-darkBorder">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400">Alcance estimado</h4>
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                            <p class="text-2xl font-bold">48,250</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Personas únicas que verán tu anuncio</p>
+                        </div>
+                        
+                        <!-- Metric 2 -->
+                        <div class="bg-gray-50 dark:bg-darkBg rounded-lg p-4 border border-gray-100 dark:border-darkBorder">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400">Clics esperados</h4>
+                                <i class="fas fa-mouse-pointer text-primary"></i>
+                            </div>
+                            <p class="text-2xl font-bold">2,160</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Interacciones directas con tus anuncios</p>
+                        </div>
+                        
+                        <!-- Metric 3 -->
+                        <div class="bg-gray-50 dark:bg-darkBg rounded-lg p-4 border border-gray-100 dark:border-darkBorder">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400">Conversiones proyectadas</h4>
+                                <i class="fas fa-shopping-cart text-primary"></i>
+                            </div>
+                            <p class="text-2xl font-bold">128</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Acciones completadas (compras, registros, etc.)</p>
+                        </div>
+                        
+                        <!-- Metric 4 -->
+                        <div class="bg-gray-50 dark:bg-darkBg rounded-lg p-4 border border-gray-100 dark:border-darkBorder">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400">ROI estimado</h4>
+                                <i class="fas fa-chart-line text-primary"></i>
+                            </div>
+                            <p class="text-2xl font-bold text-green-600 dark:text-green-400">215%</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Retorno sobre la inversión previsto</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10">
+                        <h3 class="text-xl font-semibold mb-6">Comparativa de plataformas</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plataforma</th>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Presupuesto</th>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Alcance</th>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Clics</th>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Conversiones</th>
+                                        <th class="px-4 py-3 bg-gray-50 dark:bg-darkBg/90 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ROI</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-darkBg divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fab fa-google text-red-500 mr-2"></i>
+                                                <span>Google Ads</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">€350</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">15,800</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">920</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">48</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-green-600 dark:text-green-400">195%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fab fa-facebook text-blue-600 mr-2"></i>
+                                                <span>Facebook/Instagram</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">€250</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">20,500</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">750</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">42</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-green-600 dark:text-green-400">230%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fab fa-tiktok text-black dark:text-white mr-2"></i>
+                                                <span>TikTok</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">€150</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">8,200</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">320</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">22</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-green-600 dark:text-green-400">260%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-envelope text-gray-600 dark:text-gray-400 mr-2"></i>
+                                                <span>Email Marketing</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">€100</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">3,750</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">170</td>
+                                        <td class="px-4 py-4 whitespace-nowrap">16</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-green-600 dark:text-green-400">175%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Section -->
+    <section id="strategy" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Estrategias recomendadas</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Basándose en los resultados de la simulación, te ofrecemos recomendaciones para optimizar tu inversión en marketing.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Strategy 1 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-balance-scale text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Optimización de presupuesto</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Reasigna tu presupuesto hacia las plataformas con mejor desempeño para tu tipo de producto y audiencia específica.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center text-sm text-primary dark:text-primaryLight">
+                            <span>Ver detalles</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Strategy 2 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-layer-group text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Enfoque multiplataforma</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Diversifica tu estrategia entre varias plataformas para obtener mejores resultados que concentrando todos los recursos en una sola.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center text-sm text-primary dark:text-primaryLight">
+                            <span>Ver detalles</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Strategy 3 -->
+                <div class="bg-white dark:bg-darkBg/80 rounded-xl p-6 shadow-md border border-gray-100 dark:border-darkBorder">
+                    <div class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sync-alt text-primary text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Análisis periódico</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Ejecuta simulaciones regularmente para ajustar tu estrategia según cambian las tendencias del mercado y el comportamiento de los consumidores.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center text-sm text-primary dark:text-primaryLight">
+                            <span>Ver detalles</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 gradient-bg dark:dark-gradient-bg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Comienza a optimizar tu estrategia de marketing</h2>
+            <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+                Toma decisiones basadas en datos reales y maximiza el rendimiento de tu inversión en marketing digital.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-primary hover:bg-gray-100 font-medium rounded-lg px-8 py-3 transition-colors">
+                    Crear cuenta gratuita
+                </button>
+                <button class="border border-white text-white hover:bg-white/10 font-medium rounded-lg px-8 py-3 transition-colors">
+                    Solicitar demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="text-2xl font-bold mb-4">
+                        Market<span class="text-primary">Sim</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Simulador avanzado de estrategias de marketing digital.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Producto</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Características</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Precios</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Testimonios</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Actualizaciones</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Soporte</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Ayuda</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contacto</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tutoriales</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Estado del sistema</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Términos de servicio</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de privacidad</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Política de cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2023 MarketSim. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Adjust for sticky header
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
